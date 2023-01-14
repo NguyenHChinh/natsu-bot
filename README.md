@@ -1,16 +1,12 @@
-# natsu-discord-bot
-A basic bot for Discord made in JavaScript with Discord.js
+# Natsu Discord Bot
 
-### How to Set Up
+Within this repository will be a discord bot written in discord.py (version 2.1.0 as of writing this)
 
-Open config.json and type in desired prefix and valid Discord API token.
-Run main.mjs with Node ("> node main.mjs")
+# FEATURES
 
-### Functions
+- Launches with working config file
+- Says pong when registering command (!ping)
 
-- Replies pong to "ping"
+# TO-DO (in no particular order)
 
-### To-Do:
-
-- Add more functions
-- Finish To-Do
+- Make a TO-DO list

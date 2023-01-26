@@ -3,6 +3,7 @@ import requests
 import discord
 import re
 from discord.ext import commands
+from discord import ui, Embed
 
 with open('config.json') as f:
     config = json.load(f)
@@ -41,23 +42,38 @@ async def pricecheck(ctx, *args):
     url = "https://www.lostarkmarket.online/api/export-market-live/North America East"
 
     # TO-DO:
-    # ADD/PROCESS COST OF "Oreha Solar Carp"
-    # ADD/PROCESS COST OF "Natural Pearl"
-    # ADD/PROCESS COST OF "Fish"
-    # ADD/PROCESS COST OF "Basic Oreha Fusion Material"
-    # ADD/PROCESS COST OF "Superior Oreha Fusion Material"
     # ADD/PROCESS COST OF BASE CRAFTING AND REDUCTION
+    # ADD/PROCESS COST OF "Superior Oreha Fusion Material"
     # CALCULATE PROFIT AND MAXIMUM PROFIT
 
     parameters= {
-        'items':'basic-oreha-fusion-material-2,fish-0'
+        'items':'oreha-solar-carp-2,natural-pearl-1,fish-0,basic-oreha-fusion-material-2,superior-oreha-fusion-material-4'
         }
     payload={}
     headers = {}
 
     response = requests.request("GET", url, headers=headers, data=payload, params=parameters)
     data = response.json()
-    #await ctx.send(data)
-    await ctx.send("Processed!\nCost Reduction: " + reduction[0] + "\nTime Reduction: " + reduction[1])
+    # data will be passed back with these values:
+    # data[0] = Basic Oreha Fusion Material
+    # data[1] = Fish
+    # data[2] = Natural Pearl
+    # data[3] = Oreha Solar Carp
+    # data[4] = Superior Oreha Fusion Material
+    #await ctx.send("Processed!\nCost Reduction: " + reduction[0] + "\nTime Reduction: " + reduction[1])
+
+    embed = Embed(title="Lost Ark Fusion Material Crafting", description="")
+
+    # Add fields to the embed
+    embed.add_field(name="Oreha Solar Carp", value=data[3]['avgPrice'], inline=True)
+    embed.add_field(name="Natural Pearl", value=data[2]['avgPrice'], inline=True)
+    embed.add_field(name="Fish", value=data[1]['avgPrice'], inline=True)
+
+    for i in data:
+        print(i['id'])
+
+    # Send the embed to a channel
+    await ctx.send(embed=embed)
+
 
 bot.run(config["token"])

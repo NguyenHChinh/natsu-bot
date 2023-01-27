@@ -3,7 +3,7 @@ import requests
 import discord
 import re
 from discord.ext import commands
-from discord import ui, Embed
+from discord import ui, Embed, app_commands
 
 with open('config.json') as f:
     config = json.load(f)
@@ -12,7 +12,6 @@ with open('config.json') as f:
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
-
 
 @bot.command()
 async def ping(ctx):
@@ -60,20 +59,77 @@ async def pricecheck(ctx, *args):
     # data[2] = Natural Pearl
     # data[3] = Oreha Solar Carp
     # data[4] = Superior Oreha Fusion Material
+    basic_oreha_fusion_material = data[0]
+    fish = data[1]
+    natural_pearl = data[2]
+    oreha_solar_carp = data[3]
+    superior_oreha_fusion_material = data[4]
+    base_basic = 205
+    base_superior = 250
+
     #await ctx.send("Processed!\nCost Reduction: " + reduction[0] + "\nTime Reduction: " + reduction[1])
 
     embed = Embed(title="Lost Ark Fusion Material Crafting", description="")
-
+    embed.color = 0x3498db
     # Add fields to the embed
-    embed.add_field(name="Oreha Solar Carp", value=data[3]['avgPrice'], inline=True)
-    embed.add_field(name="Natural Pearl", value=data[2]['avgPrice'], inline=True)
-    embed.add_field(name="Fish", value=data[1]['avgPrice'], inline=True)
+    average_prices = ""
+    average_prices += "*Oreha Solar Carp (x10)* - " + str(round(oreha_solar_carp['avgPrice'])) + 'g\n'
+    average_prices += "*Natural Pearl (x10)* - " + str(round(natural_pearl['avgPrice'])) + 'g\n'
+    average_prices += "*Fish (x100)* - " + str(round(fish['avgPrice'])) + 'g\n'
+    average_prices += "*Basic Oreha Fusion Material (x1): - " + str(round(basic_oreha_fusion_material['avgPrice'])) + 'g\n'
+    average_prices += "*Superior Oreha Fusion Material (x1)* - " + str(round(superior_oreha_fusion_material['avgPrice'])) + 'g\n'
 
-    for i in data:
-        print(i['id'])
+    embed.add_field(name="**Prices Used in Calculation**", value=average_prices, inline=False)
+
+    def singleUnit(item):
+        return round(item['avgPrice']) / item['amount']
+
+
+    sum_basic = 0
+    crafting_operation = ""
+    crafting_operation += "10 Oreha Solar Carp - " + str(singleUnit(oreha_solar_carp) * 10) + 'g\n'
+    sum_basic += singleUnit(oreha_solar_carp) * 10
+    crafting_operation += "40 Natural Pearl - " + str(singleUnit(natural_pearl) * 40) + 'g\n'
+    sum_basic += singleUnit(natural_pearl) * 40
+    crafting_operation += "80 Fish - " + str(singleUnit(fish) * 80) + 'g\n'
+    sum_basic += singleUnit(fish) * 80
+    crafting_operation += "Base Crafting Cost - " + str(base_basc) + 'g\n'
+    sum_basic += base_basic
+    crafting_operation += '\nSum: ' + str(sum_basic) + ' or ' + str(sum_basic / 30) + ' each!'
+
+    embed.add_field(name="Cost of One Crafting Operation", value=crafting_operation, inline=False)
+    # embed.add_field(name="Oreha Solar Carp", value=round(oreha_solar_carp['avgPrice']), inline=False)
+    # embed.add_field(name="Natural Pearl", value=round(natural_pearl['avgPrice']), inline=False)
+    # embed.add_field(name="Fish", value=round(fish['avgPrice']), inline=False)
+    # embed.add_field(name="Basic Oreha Fusion Material", value=round(basic_oreha_fusion_material['avgPrice']), inline=False)
+    # embed.add_field(name="Superior Oreha Fusion Material", value=round(superior_oreha_fusion_material['avgPrice']), inline=False)
+
+    # await ctx.send("Oreha Solar Carp" + str(oreha_solar_carp))
+    # await ctx.send("Natural Pearl: " + str(natural_pearl))
+    # await ctx.send("Fish: " + str(fish))
+    # await ctx.send("Basic Oreha Fusion Material: " + str(basic_oreha_fusion_material))
+    # await ctx.send("Superior Oreha Fusion Material: " + str(superior_oreha_fusion_material))
+
+
 
     # Send the embed to a channel
     await ctx.send(embed=embed)
+
+
+MY_GUILD_ID = discord.Object(880608991233839175)  # Guild ID here
+
+@bot.hybrid_command()
+async def prices(ctx):
+    await ctx.send("yerrrr")
+
+
+@bot.command(name='sync', description='Owner only')
+async def sync(interaction: discord.Interaction):
+    if interaction.user.id == "202872300968607745":
+        await bot.tree.sync()
+        print('Command tree synced.')
+    else:
+        await interaction.response.send_message('You must be the owner to use this command!')
 
 
 bot.run(config["token"])

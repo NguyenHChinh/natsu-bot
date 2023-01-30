@@ -21,8 +21,9 @@ async def ping(ctx):
 
 @bot.command()
 async def pricecheck(ctx, *args):
-    # Start by checking if # of parameters is correct
     argument_check = 1
+
+    # Start by checking if # of parameters is correct
     if (argument_check):
         if len(args) < 1:
             await ctx.send("Please check your arguments! Reason: Invalid Number of Arguments\n" +
@@ -110,7 +111,7 @@ async def pricecheck(ctx, *args):
                                    [i]) * recipe['amount'][i]
 
         temp_sum += round(recipe['raw'] * (1 - (float(args[0])/100)))
-        return temp_sum
+        return round(temp_sum, 2)
 
     crafting_operation_basic = "```\n"
     crafting_operation_basic += "10 Oreha Solar Carp - " + \
@@ -122,8 +123,12 @@ async def pricecheck(ctx, *args):
     crafting_operation_basic += "Raw Gold - " + \
         str(round(base_basic *
             (100-(float(args[0])))/100)) + 'g (' + args[0] + '% reduction)\n'
-    crafting_operation_basic += '\nSum (Total/Per Unit): ' + str(calculateCost(
-        basic_crafting)) + 'g/' + str(round((calculateCost(basic_crafting) / 30), 2)) + 'g```\n'
+    crafting_operation_basic += '\nSum Cost (Batch/Unit): ' + str(calculateCost(
+        basic_crafting)) + 'g/' + str(round((calculateCost(basic_crafting) / 30), 2)) + 'g\n'
+    crafting_operation_basic += "Profit (Batch/Unit): "
+    crafting_operation_basic += str(round(((round(basic_oreha_fusion_material['avgPrice']) * 30) - calculateCost(basic_crafting)), 2))
+    crafting_operation_basic += "g/"
+    crafting_operation_basic += str(round(round(basic_oreha_fusion_material['avgPrice']) - (calculateCost(basic_crafting) / 30), 2)) + 'g```'
 
     craft_superior = "```\n"
     craft_superior += "16 Oreha Solar Carp - " + \
@@ -134,8 +139,12 @@ async def pricecheck(ctx, *args):
         str(round((singleUnit(fish) * 128), 2)) + 'g\n'
     craft_superior += "Raw Gold - " + str(round(base_superior *
                                                 (100-(float(args[0])))/100)) + 'g (' + args[0] + '% reduction)\n'
-    craft_superior += '\nSum (Total/Per Unit): ' + str(calculateCost(
-        superior_crafting)) + 'g/' + str(round((calculateCost(superior_crafting) / 20), 2)) + 'g```\n'
+    craft_superior += '\nSum Cost (Batch/Unit): ' + str(calculateCost(
+        superior_crafting)) + 'g/' + str(round((calculateCost(superior_crafting) / 20), 2)) + 'g\n'
+    craft_superior += "Profit (Batch/Unit): "
+    craft_superior += str(round(((round(superior_oreha_fusion_material['avgPrice']) * 20) - calculateCost(superior_crafting)), 2))
+    craft_superior += "g/"
+    craft_superior += str(round(round(superior_oreha_fusion_material['avgPrice']) - (calculateCost(superior_crafting) / 20), 2)) + 'g```'
 
     embed.add_field(name="**Crafting Costs for Basic Oreha Fusion Material**",
                     value=crafting_operation_basic, inline=False)
@@ -146,12 +155,5 @@ async def pricecheck(ctx, *args):
     # Send the embed to a channel
     await ctx.send(embed=embed)
 
-
-@ bot.command()
-async def fuck(ctx, *args):
-    if (len(args) > 1):
-        if (args[0] == "you" or args[0] == "u"):
-            messagexd = re.sub(r'[^(a-zA-Z)]', '', str(args[1]))
-            await ctx.send("yeah fuck you " + messagexd)
 
 bot.run(config["token"])

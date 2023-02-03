@@ -2,6 +2,7 @@ import json
 import requests
 import discord
 import re
+import math
 from discord.ext import commands
 from discord import ui, Embed, app_commands
 
@@ -95,6 +96,11 @@ async def pricecheck(ctx, *args):
                          'output': 20,
                          'time': 60}
 
+    def tax(recipe):
+        tax = math.ceil(recipe['data']['avgPrice'] / 20)
+        print(tax)
+        return tax
+
     def singleUnit(item):
         return round(item['avgPrice']) / item['amount']
 
@@ -112,12 +118,13 @@ async def pricecheck(ctx, *args):
         profit = []
 
         # Calculate batch
-        batch = (round(recipe['data']['avgPrice']) - 1) * recipe['output']
+        batch = (round(recipe['data']['avgPrice']) -
+                 tax(recipe)) * recipe['output']
         batch -= calculateCost(recipe)
         profit.append(round(batch, 2))
 
         # Calculate unit
-        unit = round(recipe['data']['avgPrice']) - 1
+        unit = round(recipe['data']['avgPrice']) - tax(recipe)
         unit -= calculateCost(recipe) / recipe['output']
         profit.append(round(unit, 2))
 

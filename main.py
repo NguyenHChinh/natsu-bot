@@ -38,15 +38,19 @@ async def pricecheck(ctx, *args):
         for i in args:
             # Processing argument to only number value (remove %)
             i = re.sub(r'[^(0-9) + .]', '', i)
-
             if float(i) < 0 or float(i) > 100:  # Invalid Response
-                await ctx.send("```Please check your arguments! Reason: Invalid Arguments, Must Be Between 0-100```")
+                await ctx.send("```Please check your arguments!\nReason: Invalid Arguments, Must Be [0-100)```")
                 return
             else:  # Valid Response
                 reduction.append(float(i))
 
-        if len(reduction) == 1:
+        if len(reduction) == 1: # No specified time reduction
             reduction.append(0)
+        else: # There IS a specified time reduction
+            if (reduction[1] == 100):
+                await ctx.send('```Please check your arguments!\nReason: Time reduction cannot be 100%')
+                return
+            
     else:
         await ctx.send("```Please check your arguments! Reason: Invalid Arguments\n\n" +
                        "Correct Command Usage: pricecheck [cost reduction] [time reduction]```")
@@ -98,7 +102,6 @@ async def pricecheck(ctx, *args):
 
     def tax(recipe):
         tax = math.ceil(recipe['data']['avgPrice'] / 20)
-        print(tax)
         return tax
 
     def singleUnit(item):
@@ -194,12 +197,13 @@ async def pricecheck(ctx, *args):
         craft_superior += str(calculateProfit(superior_crafting)[1]) + 'g\n'
         craft_superior += "\nPotential Profit Per Week: " + \
             str(calculatePotential(superior_crafting)) + 'g```'
+        embed.set_footer(text = "NOTE: Potential profit does NOT include great sucesses!")
 
         embed.add_field(name="**Superior Oreha Fusion Material Calculation**",
                         value=craft_superior, inline=False)
 
     # Send the embed to the channel
     await ctx.send(embed=embed)
-
+    print("Successfully executed pricecheck!")
 
 bot.run(config["token"])

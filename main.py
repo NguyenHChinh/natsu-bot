@@ -139,25 +139,27 @@ async def pricecheck(ctx, *args):
         potential = batches_per_week * calculateProfit(recipe)[0]
         return round(potential, 2)
 
+    # TO DO - FINISH THIS, REMOVE OTHER THINGS
+    def createMessage(recipe):
+        msg = f'''```
+        {recipe['amount'][0]} Oreha Solar Carp - {(singleUnit(oreha_solar_carp) * recipe['amount'][0])}
+        ```'''
+
     embed = Embed(title="Lost Ark Fusion Material Crafting", description="")
     embed.color = 0x3498db
     embed.set_thumbnail(
         url="https://cdn.discordapp.com/emojis/967248060407250954.webp?size=240&quality=lossless")
 
     if (show_average):
-        average_prices = "```\n"
-        average_prices += "Oreha Solar Carp (x10) - " + \
-            str(round(oreha_solar_carp['avgPrice'])) + 'g\n'
-        average_prices += "Natural Pearl (x10) - " + \
-            str(round(natural_pearl['avgPrice'])) + 'g\n'
-        average_prices += "Fish (x100) - " + \
-            str(round(fish['avgPrice'])) + 'g\n'
-        average_prices += "Basic Oreha Fusion Material (x1): - " + str(
-            round(basic_oreha_fusion_material['avgPrice'])) + 'g\n'
-        average_prices += "Superior Oreha Fusion Material (x1) - " + str(
-            round(superior_oreha_fusion_material['avgPrice'])) + 'g```\n\n'
-        embed.add_field(name="**Prices Used in Calculation**",
-                        value=average_prices, inline=False)
+        average_prices = ''
+        average_prices += '```'
+        average_prices += f"Oreha Solar Carp (x10) - {round(oreha_solar_carp['avgPrice'])}g\n"
+        average_prices += f"Natural Pearl (x10) - {round(natural_pearl['avgPrice'])}g\n"
+        average_prices += f"Fish (x100) - {round(fish['avgPrice'])}g\n"
+        average_prices += f"Basic Oreha Fusion Material (x1) - {round(basic_oreha_fusion_material['avgPrice'])}g\n"
+        average_prices += f"Superior Oreha Fusion Material (x1) - {round(superior_oreha_fusion_material['avgPrice'])}g\n"
+        average_prices += '```'
+        embed.add_field(name="**Prices Used in Calculation**", value=average_prices, inline=False)
 
     if (show_basic):
         craft_basic = "```\n"

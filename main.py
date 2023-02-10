@@ -5,6 +5,7 @@ import re
 import math
 from discord.ext import commands
 from discord import ui, Embed, app_commands
+from basic import check_channel
 
 with open('config.json') as f:
     config = json.load(f)
@@ -12,7 +13,7 @@ with open('config.json') as f:
 
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix='', intents=intents)
+bot = commands.Bot(command_prefix='aki ', intents=intents)
 
 
 @bot.command()
@@ -21,7 +22,14 @@ async def ping(ctx):
 
 
 @bot.command()
-async def pricecheck(ctx, *args):
+async def oreha(ctx, *args):
+    # Make sure channel is correct
+    if (not check_channel(ctx.channel.id)):
+        message = ctx.message
+        print(message)
+        await message.delete()
+        return
+
     # CONFIG VARIABLES
     show_average = 1
     show_basic = 1
@@ -44,13 +52,13 @@ async def pricecheck(ctx, *args):
             else:  # Valid Response
                 reduction.append(float(i))
 
-        if len(reduction) == 1: # No specified time reduction
+        if len(reduction) == 1:  # No specified time reduction
             reduction.append(0)
-        else: # There IS a specified time reduction
+        else:  # There IS a specified time reduction
             if (reduction[1] == 100):
                 await ctx.send('```Please check your arguments!\nReason: Time reduction cannot be 100%')
                 return
-            
+
     else:
         await ctx.send("```Please check your arguments! Reason: Invalid Arguments\n\n" +
                        "Correct Command Usage: pricecheck [cost reduction] [time reduction]```")
@@ -159,7 +167,8 @@ async def pricecheck(ctx, *args):
         average_prices += f"Basic Oreha Fusion Material (x1) - {round(basic_oreha_fusion_material['avgPrice'])}g\n"
         average_prices += f"Superior Oreha Fusion Material (x1) - {round(superior_oreha_fusion_material['avgPrice'])}g\n"
         average_prices += '```'
-        embed.add_field(name="**Prices Used in Calculation**", value=average_prices, inline=False)
+        embed.add_field(name="**Prices Used in Calculation**",
+                        value=average_prices, inline=False)
 
     if (show_basic):
         craft_basic = "```\n"
@@ -199,7 +208,8 @@ async def pricecheck(ctx, *args):
         craft_superior += str(calculateProfit(superior_crafting)[1]) + 'g\n'
         craft_superior += "\nPotential Profit Per Week: " + \
             str(calculatePotential(superior_crafting)) + 'g```'
-        embed.set_footer(text = "NOTE: Potential profit does NOT include great sucesses!")
+        embed.set_footer(
+            text="NOTE: Potential profit does NOT include great sucesses!")
 
         embed.add_field(name="**Superior Oreha Fusion Material Calculation**",
                         value=craft_superior, inline=False)

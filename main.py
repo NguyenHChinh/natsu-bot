@@ -218,4 +218,39 @@ async def oreha(ctx, *args):
     await ctx.send(embed=embed)
     print("Successfully executed pricecheck!")
 
+
+@bot.event
+async def on_reaction_add(reaction, user):
+    message = reaction.message  # our embed
+    content = message.content
+    # print(f"Reaction added to message with content: {content}")
+
+    channel = discord.utils.get(
+        message.guild.channels, name="karuta-fiends")  # our channel
+
+    flowers = ['🌻', '🌹', '🌼', '🌷']
+    role_ids = [1073733358334513152, 1073733260573671506,
+                1073733365129297960, 1073733365867483196]
+
+    for button in message.components:
+        for child in button.children:
+            emoji = child.emoji.name
+            print(emoji)
+            if emoji in flowers:
+                print(f'FLOWER: {emoji}')
+                flower_index = flowers.index(emoji)
+                # await reaction.ctx.send(f'Flower dropped! {}')
+
+
+@bot.command()
+async def test(ctx):
+    if (ctx.author.id == 202872300968607745):
+        role_ids = [1073733358334513152, 1073733260573671506,
+                    1073733365129297960, 1073733365867483196]
+
+        await ctx.send(f'Sunflower: <@&{role_ids[0]}>')
+        await ctx.send(f'Rose: <@&{role_ids[1]}>')
+        await ctx.send(f'Blossom: <@&{role_ids[2]}>')
+        await ctx.send(f'Tulip: <@&{role_ids[3]}>')
+
 bot.run(config["token"])

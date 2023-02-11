@@ -220,10 +220,12 @@ async def oreha(ctx, *args):
 
 
 @bot.event
-async def on_reaction_add(reaction, user):
-    message = reaction.message  # our embed
-    content = message.content
-    # print(f"Reaction added to message with content: {content}")
+async def on_message(message):
+    if (message.author.id != 646937666251915264):
+        return
+
+    if ('is dropping' not in message.content):
+        return
 
     channel = discord.utils.get(
         message.guild.channels, name="karuta-fiends")  # our channel
@@ -235,15 +237,15 @@ async def on_reaction_add(reaction, user):
     for button in message.components:
         for child in button.children:
             emoji = child.emoji.name
-            print(emoji)
             if emoji in flowers:
                 print(f'FLOWER: {emoji}')
                 flower_index = flowers.index(emoji)
-                # await reaction.ctx.send(f'Flower dropped! {}')
+                await message.channel.send(f'Hey! A <@&{role_ids[flower_index]}> dropped!')
 
 
 @bot.command()
 async def test(ctx):
+    # This function is purely for my testing haha
     if (ctx.author.id == 202872300968607745):
         role_ids = [1073733358334513152, 1073733260573671506,
                     1073733365129297960, 1073733365867483196]

@@ -221,10 +221,13 @@ async def oreha(ctx, *args):
 
 @bot.event
 async def on_message(message):
+    if bot.user.mentioned_in(message):
+        await message.channel.send(f'Natsu bot is currently up and running!')
+
     if (message.author.id != 646937666251915264):
         return
 
-    if ('is dropping' not in message.content):
+    if ('dropping' not in message.content):
         return
 
     channel = discord.utils.get(

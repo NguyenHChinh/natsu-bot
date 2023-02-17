@@ -224,6 +224,9 @@ async def on_message(message):
     if bot.user.mentioned_in(message):
         await message.channel.send(f'Natsu bot is currently up and running!')
 
+    if ("aki " in message.content):
+        await bot.process_commands(message)
+
     if (message.author.id != 646937666251915264):
         return
 
@@ -249,13 +252,15 @@ async def on_message(message):
 @bot.command()
 async def test(ctx):
     # This function is purely for my testing haha
-    if (ctx.author.id == 202872300968607745):
-        role_ids = [1073733358334513152, 1073733260573671506,
-                    1073733365129297960, 1073733365867483196]
+    if (ctx.author.id != 202872300968607745):
+        return
 
-        await ctx.send(f'Sunflower: <@&{role_ids[0]}>')
-        await ctx.send(f'Rose: <@&{role_ids[1]}>')
-        await ctx.send(f'Blossom: <@&{role_ids[2]}>')
-        await ctx.send(f'Tulip: <@&{role_ids[3]}>')
+    role_ids = [1073733358334513152, 1073733260573671506,
+                1073733365129297960, 1073733365867483196]
+
+    # await ctx.send(f'Sunflower: <@&{role_ids[0]}>')
+    # await ctx.send(f'Rose: <@&{role_ids[1]}>')
+    # await ctx.send(f'Blossom: <@&{role_ids[2]}>')
+    # await ctx.send(f'Tulip: <@&{role_ids[3]}>')
 
 bot.run(config["token"])

@@ -1,3 +1,8 @@
+# oreha.py
+# This file serves to host the "oreha" command
+# Usage: aki oreha [cost reduction] [time reduction]
+#        where cost and time reduction can be expressed as a float
+
 import discord
 import requests
 import re
@@ -5,13 +10,14 @@ import math
 from discord import ui, Embed, app_commands
 from discord.ext import commands
 
+
 class oreha(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
     async def oreha(self, ctx, *args):
-    # Make sure channel is correct
+        # Make sure channel is correct
         if (ctx.channel.id != 1073043279664386208):
             message = ctx.message
             print(message)
@@ -49,7 +55,7 @@ class oreha(commands.Cog):
 
         else:
             await ctx.send("```Please check your arguments! Reason: Invalid Arguments\n\n" +
-                        "Correct Command Usage: pricecheck [cost reduction] [time reduction]```")
+                           "Correct Command Usage: pricecheck [cost reduction] [time reduction]```")
             return
 
         # Using lostarkmarket.online api to receive information on each items
@@ -83,18 +89,18 @@ class oreha(commands.Cog):
         base_superior = 250
 
         basic_crafting = {'materials': [oreha_solar_carp, natural_pearl, fish],
-                        'amount': [10, 40, 80],
-                        'raw': base_basic,
-                        'data': basic_oreha_fusion_material,
-                        'output': 30,
-                        'time': 45}
+                          'amount': [10, 40, 80],
+                          'raw': base_basic,
+                          'data': basic_oreha_fusion_material,
+                          'output': 30,
+                          'time': 45}
 
         superior_crafting = {'materials': [oreha_solar_carp, natural_pearl, fish],
-                            'amount': [16, 64, 128],
-                            'raw': base_superior,
-                            'data': superior_oreha_fusion_material,
-                            'output': 20,
-                            'time': 60}
+                             'amount': [16, 64, 128],
+                             'raw': base_superior,
+                             'data': superior_oreha_fusion_material,
+                             'output': 20,
+                             'time': 60}
 
         def tax(recipe):
             tax = math.ceil(recipe['data']['avgPrice'] / 20)
@@ -107,7 +113,7 @@ class oreha(commands.Cog):
             temp_sum = 0
             for i in range(len(recipe['materials'])):
                 temp_sum += singleUnit(recipe['materials']
-                                    [i]) * recipe['amount'][i]
+                                       [i]) * recipe['amount'][i]
 
             temp_sum += round(recipe['raw'] * (1 - (float(reduction[0])/100)))
             return round(temp_sum, 2)
@@ -118,7 +124,7 @@ class oreha(commands.Cog):
 
             # Calculate batch
             batch = (round(recipe['data']['avgPrice']) -
-                    tax(recipe)) * recipe['output']
+                     tax(recipe)) * recipe['output']
             batch -= calculateCost(recipe)
             profit.append(round(batch, 2))
 
@@ -141,7 +147,8 @@ class oreha(commands.Cog):
             {recipe['amount'][0]} Oreha Solar Carp - {(singleUnit(oreha_solar_carp) * recipe['amount'][0])}
             ```'''
 
-        embed = Embed(title="Lost Ark Fusion Material Crafting", description="")
+        embed = Embed(title="Lost Ark Fusion Material Crafting",
+                      description="")
         embed.color = 0x3498db
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/emojis/967248060407250954.webp?size=240&quality=lossless")
@@ -167,7 +174,7 @@ class oreha(commands.Cog):
             craft_basic += "80 Fish - " + \
                 str(round((singleUnit(fish) * 80), 2)) + 'g\n'
             craft_basic += "Raw Gold - " + str(round(base_basic *
-                                                    (100-(reduction[0]))/100)) + 'g (' + str(reduction[0]) + '% reduction)\n'
+                                                     (100-(reduction[0]))/100)) + 'g (' + str(reduction[0]) + '% reduction)\n'
             craft_basic += '\nSum Cost (Batch/Unit): ' + str(calculateCost(
                 basic_crafting)) + 'g/' + str(round((calculateCost(basic_crafting) / 30), 2)) + 'g\n'
             craft_basic += "Profit (Batch/Unit): " + \
@@ -193,7 +200,8 @@ class oreha(commands.Cog):
                 superior_crafting)) + 'g/' + str(round((calculateCost(superior_crafting) / 20), 2)) + 'g\n'
             craft_superior += "Profit (Batch/Unit): " + \
                 str(calculateProfit(superior_crafting)[0]) + "g/"
-            craft_superior += str(calculateProfit(superior_crafting)[1]) + 'g\n'
+            craft_superior += str(calculateProfit(superior_crafting)
+                                  [1]) + 'g\n'
             craft_superior += "\nPotential Profit Per Week: " + \
                 str(calculatePotential(superior_crafting)) + 'g```'
             embed.set_footer(
@@ -205,6 +213,7 @@ class oreha(commands.Cog):
         # Send the embed to the channel
         await ctx.send(embed=embed)
         print("Successfully executed pricecheck!")
+
 
 async def setup(bot):
     await bot.add_cog(oreha(bot))

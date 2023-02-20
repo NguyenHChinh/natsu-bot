@@ -1,5 +1,9 @@
+# essential.py
+# This file serves to host very basic commands for personal testing of bot
+
 import discord
 from discord.ext import commands
+
 
 class essential(commands.Cog):
     def __init__(self, bot):
@@ -7,7 +11,7 @@ class essential(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f'Successfully loaded all cogs! {self.bot.user} is now online!')
+        print(f'{self.bot.user} is now online and ready to go!')
 
     @commands.command()
     async def ping(self, ctx):
@@ -21,6 +25,7 @@ class essential(commands.Cog):
             return
 
         await ctx.send("Test!")
+
 
 async def setup(bot):
     await bot.add_cog(essential(bot))

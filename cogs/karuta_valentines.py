@@ -1,3 +1,12 @@
+# karuta_valentines.py
+# This file serves to host the automatic role pinger for flower drops from Karuta
+# Usage: Just have appropriate roles labeled and bot running
+# Example: During the Valentines event (February exclusive event), Karuta will drop
+#          flowers in addition to cards, so there will be an additional button with
+#          a flower emoji within the name property. This function takes the emoji and
+#          determines if it is a flower, if so: ping that role.
+#          Reason: Players are pre-determined flower-types and can only pick up specific flowers
+
 import discord
 from discord.ext import commands
 

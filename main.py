@@ -17,9 +17,15 @@ async def load():
             await bot.load_extension(f'cogs.{file_name[:-3]}')
             print(f'Loaded cog.{file_name[:-3]}')
 
+
 async def main():
     await load()
     await bot.start(config["token"])
+
+
+@bot.event
+async def on_ready():
+    print(f'{bot.user} is now online and ready to go!')
 
 # bot.run(config["token"])
 asyncio.run(main())

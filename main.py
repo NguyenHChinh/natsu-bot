@@ -11,6 +11,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='aki ', intents=intents)
 
+
 async def load():
     for file_name in os.listdir('./cogs'):
         if file_name.endswith('.py'):
@@ -27,5 +28,4 @@ async def main():
 async def on_ready():
     print(f'{bot.user} is now online and ready to go!')
 
-# bot.run(config["token"])
 asyncio.run(main())

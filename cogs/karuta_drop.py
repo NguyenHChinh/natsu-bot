@@ -5,6 +5,7 @@
 import discord
 import requests
 import time
+import os
 from discord.ext import commands
 from PIL import Image
 from pytesseract import pytesseract
@@ -30,34 +31,43 @@ class karuta_drop(commands.Cog):
         channel = discord.utils.get(
             message.guild.channels, name="karuta-fiends")  # our channel
 
+        path = os.path.join(os.getcwd(), 'cogs', 'temp')
+        if not os.path.exists(path):
+            os.makedirs(path)
+        file_path = os.path.join(path, 'karuta_drop.jpg')
         img_data = requests.get(message.attachments[0].url).content
-        with open('karuta_drop.jpg', 'wb') as handler:
+        with open(file_path, 'wb') as handler:
             handler.write(img_data)
 
         time.sleep(2)
 
         pytesseract.tesseract_cmd = path_to_tesseract
-        img = Image.open('karuta_drop.jpg')
+        img = Image.open(file_path)
 
         cards = []
-
-        card1 = img.crop((50, 67, 230, 105))
+        top = 67
+        bottom = 105
+        card1 = img.crop((50, top, 230, bottom))
         cards.append(pytesseract.image_to_string(card1))
+        card1.convert('RGB').save(os.path.join(file_path, 'card1.jpg'))
 
-        card2 = img.crop((320, 67, 505, 105))
+        card2 = img.crop((320, top, 505, bottom))
         cards.append(pytesseract.image_to_string(card2))
+        card2.convert('RGB').save(os.path.join(file_path, 'card2.jpg'))
 
-        card3 = img.crop((600, 67, 780, 105))
+        card3 = img.crop((600, top, 780, bottom))
         cards.append(pytesseract.image_to_string(card3))
+        card3.convert('RGB').save(os.path.join(file_path, 'card3.jpg'))
+
         if (img.width > 840):
-            card4 = img.crop((870, 67, 1050, 105))
+            card4 = img.crop((870, top, 1050, bottom))
             cards.append(pytesseract.image_to_string(card4))
+            card4.convert('RGB').save(os.path.join(file_path, 'card4.jpg'))
 
         print_message = ''
         for i in cards:
-            # await message.channel.send(i)
             print_message += i
-        await message.channel.send(print_message)
+        # await message.channel.send(print_message)
         print(print_message)
 
 

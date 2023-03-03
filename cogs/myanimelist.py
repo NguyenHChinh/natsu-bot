@@ -16,14 +16,8 @@ class myanimelist(commands.Cog):
 
     @commands.command()
     async def search(self, ctx, *args):
-        print('search function executed')
-
         site = 'myanimelist.net'
-        query = ''
-        for index, word in enumerate(args):
-            query = query + word
-            if index < (len(args) - 1):
-                query = query + '+'
+        query = '+'.join(args)
 
         url = f"https://www.google.com/search?q={query}+site:{site}"
         print(url)

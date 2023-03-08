@@ -6,6 +6,7 @@ import discord
 import requests
 import time
 import os
+import asyncio
 from discord.ext import commands
 from PIL import Image
 from pytesseract import pytesseract
@@ -23,6 +24,19 @@ class karuta_drop(commands.Cog):
             await commands.bot.process_commands(message)
 
         if (message.author.id != 646937666251915264):
+            return
+        
+        target_channel = 970386541811753040 #whisper in Aki's Academy
+        if message.channel.id == target_channel:
+            print("1")
+            original_message = await message.channel.fetch_message(message.reference.message_id)
+            original_username = original_message.author
+            print(f'{original_username} just used a Karuta command in #whisper LMFAO')
+            my_reply = await original_message.reply(f'Hey, {original_message.author.name}. You\'re in the wrong channel :)')
+            await asyncio.sleep(3)
+            await message.delete()
+            await original_message.delete()
+            await my_reply.delete()
             return
 
         if ('dropping' not in message.content):

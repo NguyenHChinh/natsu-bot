@@ -7,11 +7,14 @@ import requests
 import time
 import os
 import asyncio
+import platform
 from discord.ext import commands
 from PIL import Image
 from pytesseract import pytesseract
 
-path_to_tesseract = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+if (platform.system() == 'Windows'):
+    path_to_tesseract = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    pytesseract.tesseract_cmd = path_to_tesseract
 
 
 class karuta_drop(commands.Cog):
@@ -25,8 +28,8 @@ class karuta_drop(commands.Cog):
 
         if (message.author.id != 646937666251915264):
             return
-        
-        target_channel = 970386541811753040 #whisper in Aki's Academy
+
+        target_channel = 970386541811753040  # whisper in Aki's Academy
         if message.channel.id == target_channel:
             print("1")
             original_message = await message.channel.fetch_message(message.reference.message_id)

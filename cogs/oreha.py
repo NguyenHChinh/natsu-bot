@@ -15,71 +15,11 @@ class oreha(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def oreha(self, ctx, *args):
-        # Make sure channel is correct
-        if (ctx.channel.id != 1073043279664386208):
-            message = ctx.message
-            print(message)
-            await message.delete()
-            return
-
-        # CONFIG VARIABLES
+    async def calculate_prices(self, ctx, reduction, data):
         show_average = 1
         show_basic = 1
         show_superior = 1
 
-        # Argument Checks for Any # Of Parameters
-        reduction = []
-        if len(args) == 0:
-            reduction.append(0)
-            reduction.append(0)
-        elif (len(args) < 3):
-            # Creates reduction variable and verifies validity of each argument
-            # Reduction varaible format will be [cost_reduction, time_reduction
-            for i in args:
-                # Processing argument to only number value (remove %)
-                i = re.sub(r'[^(0-9) + .]', '', i)
-                if float(i) < 0 or float(i) > 100:  # Invalid Response
-                    await ctx.send("```Please check your arguments!\nReason: Invalid Arguments, Must Be [0-100)```")
-                    return
-                else:  # Valid Response
-                    reduction.append(float(i))
-
-            if len(reduction) == 1:  # No specified time reduction
-                reduction.append(0)
-            else:  # There IS a specified time reduction
-                if (reduction[1] == 100):
-                    await ctx.send('```Please check your arguments!\nReason: Time reduction cannot be 100%')
-                    return
-
-        else:
-            await ctx.send("```Please check your arguments! Reason: Invalid Arguments\n\n" +
-                           "Correct Command Usage: pricecheck [cost reduction] [time reduction]```")
-            return
-
-        # Using lostarkmarket.online api to receive information on each items
-        url = "https://www.lostarkmarket.online/api/export-market-live/North America East"
-
-        # TO-DO:
-        # CALCULATE PROFIT AND MAXIMUM PROFIT
-        # CLEAN UP EMBED
-
-        parameters = {
-            'items': 'oreha-solar-carp-2,natural-pearl-1,fish-0,basic-oreha-fusion-material-2,superior-oreha-fusion-material-4'
-        }
-        payload = {}
-        headers = {}
-
-        response = requests.request(
-            "GET", url, headers=headers, data=payload, params=parameters)
-        data = response.json()
-        # data will be passed back with these values:
-        # data[0] = Basic Oreha Fusion Material
-        # data[1] = Fish
-        # data[2] = Natural Pearl
-        # data[3] = Oreha Solar Carp
-        # data[4] = Superior Oreha Fusion Material
         basic_oreha_fusion_material = data[0]
         fish = data[1]
         natural_pearl = data[2]
@@ -101,7 +41,7 @@ class oreha(commands.Cog):
                              'data': superior_oreha_fusion_material,
                              'output': 20,
                              'time': 60}
-
+        
         def tax(recipe):
             tax = math.ceil(recipe['data']['avgPrice'] / 20)
             return tax
@@ -212,8 +152,112 @@ class oreha(commands.Cog):
 
         # Send the embed to the channel
         await ctx.send(embed=embed)
-        print("Successfully executed pricecheck!")
+        print("Successfully executed price check!")
 
+    @commands.command()
+    async def oreha(self, ctx, *args):
+        # Make sure channel is correct
+        if (ctx.channel.id != 1073043279664386208):
+            message = ctx.message
+            await message.delete()
+            return
+
+        # Argument Checks for Any # Of Parameters
+        reduction = []
+        if len(args) == 0:
+            reduction.append(0)
+            reduction.append(0)
+        elif (len(args) < 3):
+            # Creates reduction variable and verifies validity of each argument
+            # Reduction varaible format will be [cost_reduction, time_reduction
+            for i in args:
+                # Processing argument to only number value (remove %)
+                i = re.sub(r'[^(0-9) + .]', '', i)
+                if float(i) < 0 or float(i) > 100:  # Invalid Response
+                    await ctx.send("```Please check your arguments!\nReason: Invalid Arguments, Must Be [0-100)```")
+                    return
+                else:  # Valid Response
+                    reduction.append(float(i))
+
+            if len(reduction) == 1:  # No specified time reduction
+                reduction.append(0)
+            else:  # There IS a specified time reduction
+                if (reduction[1] == 100):
+                    await ctx.send('```Please check your arguments!\nReason: Time reduction cannot be 100%')
+                    return
+
+        else:
+            await ctx.send("```Please check your arguments! Reason: Invalid Arguments\n\n" +
+                           "Correct Command Usage: pricecheck [cost reduction] [time reduction]```")
+            return
+
+        # Using lostarkmarket.online api to receive information on each items
+        url = "https://www.lostarkmarket.online/api/export-market-live/North America East"
+
+        # TO-DO:
+        # CALCULATE PROFIT AND MAXIMUM PROFIT
+        # CLEAN UP EMBED
+
+        parameters = {
+            'items': 'oreha-solar-carp-2,natural-pearl-1,fish-0,basic-oreha-fusion-material-2,superior-oreha-fusion-material-4'
+        }
+        payload = {}
+        headers = {}
+
+        response = requests.request(
+            "GET", url, headers=headers, data=payload, params=parameters)
+        data = response.json()
+        # data will be passed back with these values:
+        # data[0] = Basic Oreha Fusion Material
+        # data[1] = Fish
+        # data[2] = Natural Pearl
+        # data[3] = Oreha Solar Carp
+        # data[4] = Superior Oreha Fusion Material
+        basic_oreha_fusion_material = data[0]
+        fish = data[1]
+        natural_pearl = data[2]
+        oreha_solar_carp = data[3]
+        superior_oreha_fusion_material = data[4]
+
+        print(f'Data: {data}')
+        print(f'Reduction: {reduction}')
+        await self.calculate_prices(ctx, reduction, data)
+
+    # TO-DO: Once I have the time, remove this function completely
+    #        oreha command will have buttons that you can click and edit the
+    #        prices manually and it will automatically edit the original message.
+    @commands.command()
+    async def manual(self, ctx, *args):
+        if len(args) != 7:
+            await ctx.send("Invalid Input. This command is VERY experimental so please do it this way:\n" +
+                           "`aki manual [basic oreha] [fish] [natural pearl] [oreha solar carp] [superior oreha] [cost reduction] [time reduction]`")
+            return
+        
+        # Using lostarkmarket.online api to receive information on each items
+        url = "https://www.lostarkmarket.online/api/export-market-live/North America East"
+
+        # TO-DO:
+        # CALCULATE PROFIT AND MAXIMUM PROFIT
+        # CLEAN UP EMBED
+
+        parameters = {
+            'items': 'oreha-solar-carp-2,natural-pearl-1,fish-0,basic-oreha-fusion-material-2,superior-oreha-fusion-material-4'
+        }
+        payload = {}
+        headers = {}
+
+        response = requests.request(
+            "GET", url, headers=headers, data=payload, params=parameters)
+        data = response.json()
+
+        # for i in range(5):
+        #     data[i]['avgPrice'] = args[i]
+
+        reduction = [float(args[5]), float(args[6])]
+        print(f'Data: {data}')
+        print(f'Reduction: {reduction}')
+
+        await self.calculate_prices(ctx, reduction, data)
 
 async def setup(bot):
     await bot.add_cog(oreha(bot))

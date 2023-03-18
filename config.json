@@ -1,3 +1,4 @@
 {
-    "token": "put your token here"
+    "discord_token": "put your token here",
+    "openai_token": "put your openai token here"
 }

@@ -21,7 +21,7 @@ async def load():
 
 async def main():
     await load()
-    await bot.start(config["token"])
+    await bot.start(config["discord_token"])
 
 
 @bot.event

@@ -31,7 +31,6 @@ class karuta_drop(commands.Cog):
 
         target_channel = 970386541811753040  # whisper in Aki's Academy
         if message.channel.id == target_channel:
-            print("1")
             original_message = await message.channel.fetch_message(message.reference.message_id)
             original_username = original_message.author
             print(f'{original_username} just used a Karuta command in #whisper LMFAO')

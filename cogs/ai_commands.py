@@ -66,7 +66,7 @@ class ai_commands(commands.Cog):
 
         if response.status_code == 200:
             image_url = response.json()["data"][0]["url"]
-            embed = Embed(title="OpenAI Generator",
+            embed = Embed(title="DALLE Image Generator",
                           description="")
             embed.color = 0x3498db
             embed.add_field(name="Prompt",

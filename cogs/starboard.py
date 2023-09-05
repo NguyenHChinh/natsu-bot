@@ -4,6 +4,7 @@ import discord
 import aiohttp
 import io
 from discord.ext import commands
+from datetime import datetime
 
 STAR_EMOJI = "⭐"
 KARUTA_BOT_ID = 646937666251915264
@@ -31,7 +32,7 @@ class starboard(commands.Cog):
 
             # create the embed
             embed_description = f"{original_content}\n\n[**Jump to original message!**]({message.jump_url})"
-            embed = discord.Embed(description=embed_description, color=0x3498db)
+            embed = discord.Embed(description=embed_description, color=0x3498db, timestamp=datetime.utcnow())
             embed.set_footer(text=f"Starred by {user.name}")
 
             # fetch the image using aiohttp

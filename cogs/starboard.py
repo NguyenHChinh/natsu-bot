@@ -15,9 +15,6 @@ class starboard(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        print(reaction.emoji)
-        print(reaction.message)
-
         # check emoji
         if str(reaction.emoji) == STAR_EMOJI:
             message = reaction.message

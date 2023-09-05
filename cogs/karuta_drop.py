@@ -5,6 +5,7 @@
 import discord
 import requests
 import time
+import json
 import os
 import asyncio
 import platform
@@ -16,6 +17,13 @@ if (platform.system() == 'Windows'):
     path_to_tesseract = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
     pytesseract.tesseract_cmd = path_to_tesseract
 
+json_file = "counts.json"
+
+if os.path.exists(json_file):
+    with open(json_file, "r") as f:
+        counts = json.load(f)
+else:
+    counts = {}
 
 class karuta_drop(commands.Cog):
     def __init__(self, bot):
@@ -29,12 +37,21 @@ class karuta_drop(commands.Cog):
         if (message.author.id != 646937666251915264):
             return
 
-        target_channel = 970386541811753040  # whisper in Aki's Academy
+        target_channel = 1111547887839608842  # whisper in Aki's Academy
         if message.channel.id == target_channel:
             original_message = await message.channel.fetch_message(message.reference.message_id)
             original_username = original_message.author
+
+            user_id = str(original_username.id)
+
+            counts[user_id] = counts.get(user_id, 0) + 1
+
+            # save the counts back to the json file
+            with open(json_file, "w") as f:
+                json.dump(counts, f)
+            
             print(f'{original_username} just used a Karuta command in #whisper LMFAO')
-            my_reply = await original_message.reply(f'Hey, {original_message.author.name}. You\'re in the wrong channel :)')
+            my_reply = await original_message.reply(f'Hey, {original_message.author.name}. You\'re in the wrong channel :) In fact, you\'ve done this {counts[user_id]} times')
             await asyncio.sleep(3)
             await message.delete()
             await original_message.delete()

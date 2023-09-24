@@ -6,6 +6,7 @@ from discord.ext import commands
 
 admin = 202872300968607745
 confirm_emoji = "✅"
+print_updates = False
 
 class delete_msgs(commands.Cog):
     def __init__(self, bot):
@@ -13,8 +14,6 @@ class delete_msgs(commands.Cog):
 
     @commands.command()
     async def delete(self, ctx, number: int):
-        print("delete")
-
         # Ensure that the user is you
         if ctx.author.id != admin:
             return await ctx.send("You do not have permission to use this command.")
@@ -25,11 +24,14 @@ class delete_msgs(commands.Cog):
 
         # Fetch messages
         try:
-            print("About to fetch messages...")
+            if (print_updates):
+                print("About to fetch messages...")
             messages = [msg async for msg in ctx.channel.history(limit=number+1)]
-            print(f"Number of messages fetched: {len(messages)}")
+            if (print_updates):
+                print(f"Number of messages fetched: {len(messages)}")
         except Exception as e:
-            print(f"An error occurred while fetching messages: {e}")
+            if (print_updates):
+                print(f"An error occurred while fetching messages: {e}")
             return await ctx.send(f"An error occurred: {e}")
 
         cutoff_msg_content = messages[-1].content if messages else None

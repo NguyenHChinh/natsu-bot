@@ -22,9 +22,24 @@ class delete_msgs(commands.Cog):
         # Check the number of messages to delete
         if number <= 0:
             return await ctx.send("The number of messages to delete should be greater than zero.")
-        
+
+        # Fetch messages
+        try:
+            print("About to fetch messages...")
+            messages = [msg async for msg in ctx.channel.history(limit=number+1)]
+            print(f"Number of messages fetched: {len(messages)}")
+        except Exception as e:
+            print(f"An error occurred while fetching messages: {e}")
+            return await ctx.send(f"An error occurred: {e}")
+
+        cutoff_msg_content = messages[-1].content if messages else None
+
+        # If there is no "cutoff" message, inform the user
+        if not cutoff_msg_content:
+            return await ctx.send("Couldn't find a cutoff message. Maybe the channel has less history than you specified?")
+
         # Send a confirmation message and add the emoji
-        confirm_msg = await ctx.send(f"Are you sure you want to delete {number} messages? React with {confirm_emoji} to confirm.")
+        confirm_msg = await ctx.send(f"`{cutoff_msg_content}` and messages after will be deleted. React with {confirm_emoji} to confirm.")
         await confirm_msg.add_reaction(confirm_emoji)
 
         def check(reaction, user):

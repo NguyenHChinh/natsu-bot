@@ -27,26 +27,26 @@ async def main():
 async def load(ctx, extension):
     try:
         await bot.load_extension(f'cogs.{extension}')
-        await ctx.send(f'Loaded {extension}')
+        print(f'Loaded {extension}')
     except Exception as e:
-        await ctx.send(f'Error loading {extension}: {e}')
+        print(f'Error loading {extension}: {e}')
 
 @bot.command()
 async def unload(ctx, extension):
     try:
         await bot.unload_extension(f'cogs.{extension}')
-        await ctx.send(f'Unloaded {extension}')
+        print(f'Unloaded {extension}')
     except Exception as e:
-        await ctx.send(f'Error unloading {extension}: {e}')
+        print(f'Error unloading {extension}: {e}')
 
 @bot.command()
 async def reload(ctx, extension):
     try:
         await bot.unload_extension(f'cogs.{extension}')
         await bot.load_extension(f'cogs.{extension}')
-        await ctx.send(f'Reloaded {extension}')
+        print(f'Reloaded {extension}')
     except Exception as e:
-        await ctx.send(f'Error reloading {extension}: {e}')
+        print(f'Error reloading {extension}: {e}')
 
 @bot.command()
 async def loadall(ctx):
@@ -54,9 +54,9 @@ async def loadall(ctx):
         if filename.endswith('.py'):
             try:
                 await bot.load_extension(f'cogs.{filename[:-3]}')
-                await ctx.send(f'Loaded {filename[:-3]}')
+                print(f'Loaded {filename[:-3]}')
             except Exception as e:
-                await ctx.send(f'Error loading {filename[:-3]}: {e}')
+                print(f'Error loading {filename[:-3]}: {e}')
 
 @bot.command()
 async def reloadall(ctx):
@@ -65,9 +65,9 @@ async def reloadall(ctx):
             try:
                 await bot.unload_extension(f'cogs.{filename[:-3]}')
                 await bot.load_extension(f'cogs.{filename[:-3]}')
-                await ctx.send(f'Reloaded {filename[:-3]}')
+                print(f'Reloaded {filename[:-3]}')
             except Exception as e:
-                await ctx.send(f'Error reloading {filename[:-3]}: {e}')
+                print(f'Error reloading {filename[:-3]}: {e}')
 
 
 @bot.event

@@ -11,7 +11,6 @@ import asyncio
 import platform
 from discord.ext import commands
 from PIL import Image
-from pytesseract import pytesseract
 
 if (platform.system() == 'Windows'):
     path_to_tesseract = r"C:\Program Files\Tesseract-OCR\tesseract.exe"

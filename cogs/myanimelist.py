@@ -4,40 +4,35 @@
 # Example: aki search Attack on Titan
 # Output: https://myanimelist.net/anime/16498/Shingeki_no_Kyojin
 
+import httpx
 import discord
-import requests
+import json
 from discord.ext import commands
-from bs4 import BeautifulSoup
 
+# Load the client.json file
+with open('./config.json') as f:
+    config = json.load(f)
 
-class myanimelist(commands.Cog):
+class MyAnimeList(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.base_url = "https://api.myanimelist.net/v2"
+        # Replace 'Your_Client_ID_here' with your actual MyAnimeList Client ID
+        self.headers = {"X-MAL-CLIENT-ID": config['myanimelist_token']}
 
     @commands.command()
-    async def search(self, ctx, *args):
-        site = 'myanimelist.net'
-        query = '+'.join(args)
-
-        url = f"https://www.google.com/search?q={query}+site:{site}"
-        print(url)
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"}
-        response = requests.get(url, headers=headers)
-        soup = BeautifulSoup(response.text, "html.parser")
-        results = soup.find_all("div", class_="g")
-
-        if results:
-            for result in results:
-                link = result.find("a")["href"]
-                if site in link:
-                    await ctx.send(f'<{link}>')
-                    break
+    async def search(self, ctx, *, query):
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{self.base_url}/anime", params={"q": query, "limit": 1}, headers=self.headers)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("data"):
+                    anime = data["data"][0]["node"]
+                    await ctx.send(f"<https://myanimelist.net/anime/{anime['id']}/{anime['title'].replace(' ', '_')}>")
+                else:
+                    await ctx.send("No results found.")
             else:
-                print(f"No results found on {site}")
-        else:
-            print("No results found")
-
+                await ctx.send("Failed to fetch data from MyAnimeList.")
 
 async def setup(bot):
-    await bot.add_cog(myanimelist(bot))
+    await bot.add_cog(MyAnimeList(bot))

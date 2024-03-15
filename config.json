@@ -1,4 +1,9 @@
 {
     "discord_token": "",
-    "myanimelist_token": ""
+    "myanimelist_token": "",
+    "db_host": "",
+    "db_user": "",
+    "db_passwd": "",
+    "db_port": "",
+    "db_database": ""
 }

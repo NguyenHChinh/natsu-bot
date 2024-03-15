@@ -1,5 +1,10 @@
 import mysql.connector
 from mysql.connector import Error
+import json
+
+# Load the client.json file
+with open('./config.json') as f:
+    config = json.load(f)
 
 class DatabaseManager:
     def __init__(self):
@@ -10,11 +15,12 @@ class DatabaseManager:
         if self.conn is None:
             try:
                 self.conn = mysql.connector.connect(
-                    host="",
-                    user="",
-                    passwd="",
-                    database="",
-                    port=0000
+                    # Set this up in config.json!
+                    host=config['db_host'],
+                    user=config['db_user'],
+                    passwd=config['db_password'],
+                    database=config['db_database'],
+                    port=config['db_port'],
                 )
             except Error as e:
                 print(f"Error connecting to the database: {e}")

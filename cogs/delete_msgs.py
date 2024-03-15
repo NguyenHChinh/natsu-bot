@@ -1,10 +1,15 @@
 # delete_msgs.py:
 # This file serves to delete messages in bulk
 
+# Importing required libraries
 import discord
+import json
 from discord.ext import commands
 
-admin = 202872300968607745
+# Load the client.json file
+with open('./config.json') as f:
+    config = json.load(f)
+
 confirm_emoji = "✅"
 print_updates = False
 
@@ -14,8 +19,8 @@ class delete_msgs(commands.Cog):
 
     @commands.command()
     async def delete(self, ctx, number: int):
-        # Ensure that the user is you
-        if ctx.author.id != admin:
+        # Ensure that the user is admin
+        if ctx.author.id != config['discord_admin_id']:
             return await ctx.send("You do not have permission to use this command.")
 
         # Check the number of messages to delete

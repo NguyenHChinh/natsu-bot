@@ -22,8 +22,8 @@ class myanimelist(commands.Cog):
 
 
     # Search Feature
-    #   Usage: a!search [Anime Name]
-    #   Example: a!search Attack on Titan
+    #   Usage: a.search [Anime Name]
+    #   Example: a.search Attack on Titan
     #   Output: https://myanimelist.net/anime/16498/Shingeki_no_Kyojin
     @commands.command()
     async def search(self, ctx, *, query):
@@ -41,8 +41,8 @@ class myanimelist(commands.Cog):
 
 
     # Insert or update entry in MyAnimeList user table in database
-    #   Usage: a!setmal <username>
-    #   Example: a!setmal "Bobby"
+    #   Usage: a.setmal <username>
+    #   Example: a.setmal "Bobby"
     #   Output: Set MyAnimeList Username "Bobby" for @Bobby
     @commands.command()
     async def setmal(self, ctx, user_string: str):
@@ -62,10 +62,10 @@ class myanimelist(commands.Cog):
 
 
     # Retrieve value from MyAnimeList user table in database
-    #   Usage: a!getmal
-    #   Example: a!getmal
+    #   Usage: a.getmal
+    #   Example: a.getmal
     #   Output: Set MyAnimeList Username is "Bobby"
-    #   Error Output: No MyAnimeList Username stored. Set with a!setmal <name>
+    #   Error Output: No MyAnimeList Username stored. Set with a.setmal <name>
     @commands.command()
     async def getmal(self, ctx):
         user_id = ctx.author.id
@@ -74,12 +74,12 @@ class myanimelist(commands.Cog):
         if result:
             await ctx.send(f"Set MyAnimeList Username is \"{result['user_string']}\"")
         else:
-            await ctx.send("No MyAnimeList Username stored. Set with a!setmal <name>")
+            await ctx.send("No MyAnimeList Username stored. Set with a.setmal <name>")
 
 
     # Pull MyAnimeList User List -- WIP
-    #   Usage: a!mylist
-    #   Example: a!mylist
+    #   Usage: a.mylist
+    #   Example: a.mylist
     # TODO: Since embed can't store the whole message, implement buttons to flip through "pages"
     @commands.command()
     async def mylist(self, ctx):
@@ -98,7 +98,6 @@ class myanimelist(commands.Cog):
                 data = response.json()
                 if data.get("data"):
                     embed = discord.Embed(title=f"{user_string}'s Anime List", description="Here are the titles:", color=discord.Color.blue())
-                    print(data['data'])
                     for anime in data['data']:
                         anime_title = anime['node']['title']
                         anime_score = anime['list_status']['score']

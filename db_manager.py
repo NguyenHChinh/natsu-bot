@@ -18,7 +18,7 @@ class DatabaseManager:
                     # Set this up in config.json!
                     host=config['db_host'],
                     user=config['db_user'],
-                    passwd=config['db_password'],
+                    passwd=config['db_passwd'],
                     database=config['db_database'],
                     port=config['db_port'],
                 )

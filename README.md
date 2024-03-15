@@ -55,6 +55,10 @@ Anime-related tools that works with the MyAnimeList API
 
 A niche tool that calculates the profitability and statistics of crafting certain materials in the Korean MMORPG video game __Lost Ark__. It utilizes the public API offered by lostarkmarket.online to retrieve the prices of market items in real time. 
 
+`oreha <cost reduction> <time reduction>` - outputs an embed of statistics when crafting for both Basic Oreha Fusion Material and Superior Oreha Fusion Material, automatically retrieves prices of crafting ingredients from LostArkMarket API
+
+`manual <cost of basic oreha> <cost of fish> <cost of natural pearl> <cost of oreha solar carp> <cost superior oreha> <cost reduction> <time reduction>` - outputs an embed of statistics when crafting for both Oreha Fusion Material and Superior Oreha Fusion Material, allows users to manually input price for each crafting ingredient
+
 ### starboard.py
 
 A niche tool for the Discord card game __Karuta__. When a user reacts to a drop message with "⭐", it will take the image of the cards that are dropped and post them in a specified channel, as well as an embed that includes the original message content, a link to the message, the user who starred it, and the time the message got marked with "⭐". 

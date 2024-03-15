@@ -31,6 +31,8 @@ A file used as a template for new cog files with basic features
 
 A discord administrative funnction where the bot sends a message to a designated channel per discord guild when a user from said guild leaves.
 
+<br></br>
+
 ## Karuta Tools
 
 ### starboard.py
@@ -47,6 +49,8 @@ In other words, if there are the roles "Sunflower", "Rose", "Blossom", and "Tuli
 
 A niche tool for the Discord card game __Karuta__. When any user uses a karuta command in a channel that is marked as part of this feature, it will notify the user that they're in the wrong channel, as well as a funny remark stating how many times they have done so before. These values are stored in counts.json. Afterwards, the user's original message, Karuta's reply message, and the bot's message are all deleted. 
 
+<br></br>
+
 ## Anime and Manga Tools
 
 ### myanimelist.py
@@ -60,6 +64,8 @@ Anime-related tools that works with the MyAnimeList API
 `getmal` - retrieves string correlated to user who executed command
 
 `mylist` - outputs an embed of animes from stored user's Anime List on MyAnimeList
+
+<br></br>
 
 ## Video Game Tools
 

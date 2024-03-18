@@ -65,6 +65,8 @@ Anime-related tools that works with the MyAnimeList API
 
 `mylist` - outputs an embed of animes from stored user's Anime List on MyAnimeList
 
+`animelist <@user>` - outputs an embed of animes from another stored user's Anime List on MyAnimeList
+
 <br></br>
 
 ## Video Game Tools

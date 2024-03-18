@@ -110,6 +110,35 @@ class myanimelist(commands.Cog):
             else:
                 await ctx.send("Failed to fetch the anime list from MyAnimeList.")
 
+    @commands.command()
+    async def animelist(self, ctx, user: discord.User):
+        user_id = user.id
+        query = "SELECT user_string FROM user_data WHERE user_id = %s"
+        result = self.db_manager.fetch_query(query, (user_id,))
+        user_string = result['user_string']
+
+        if not user_string:
+            await ctx.send("That user has not set a MyAnimeList username. They can set their username by doing `setmal <name>`.")
+            return
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{self.base_url}/users/{user_string}/animelist", params={"fields": "list_status", "limit": 25}, headers=self.headers)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("data"):
+                    embed = discord.Embed(title=f"{user_string}'s Anime List", description="Here are the titles:", color=discord.Color.blue())
+                    for anime in data['data']:
+                        anime_title = anime['node']['title']
+                        anime_score = anime['list_status']['score']
+
+                        embed.add_field(name=anime_title, value=anime_score, inline=False)  # Using "•" as a placeholder value
+
+                    await ctx.send(embed=embed)
+                else:
+                    await ctx.send(f"{user_string}'s anime list could not be found or is empty.")
+            else:
+                await ctx.send("Failed to fetch the anime list from MyAnimeList.")
+
 
 async def setup(bot):
     await bot.add_cog(myanimelist(bot))

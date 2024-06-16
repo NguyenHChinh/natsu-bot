@@ -52,7 +52,7 @@ class starboard(commands.Cog):
 
             # get the starboard channel ID from database
             query = "SELECT channel_id FROM server_channels WHERE server_id = %s"
-            result = self.db_manager.fetch_query(query, (current_guild))
+            result = self.db_manager.fetch_query(query, (current_guild,))
             if result:
                 STARBOARD_CHANNEL_ID = result['channel_id']
 

@@ -49,3 +49,10 @@ class DatabaseManager:
         with self.conn.cursor(dictionary=True) as cursor:
             cursor.execute(query, params)
             return cursor.fetchone()  # Fetch the first row
+
+    def fetch_all_query(self, query, params=None):
+        """Fetch multiple records from the database."""
+        self.connect()
+        with self.conn.cursor(dictionary=True) as cursor:
+            cursor.execute(query, params)
+            return cursor.fetchall()  # Fetch all rows

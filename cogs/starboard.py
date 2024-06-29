@@ -16,6 +16,25 @@ class starboard(commands.Cog):
         self.bot = bot
         self.db_manager = DatabaseManager()
 
+        # Stored server ID and channel ID pairs
+        self.starboard_channels = {}
+
+
+    # Handler function to update Server ID/Channel ID pairs
+    def fetch_starboard_channels(self):
+        query = """
+        SELECT server_id, channel_id
+        FROM server_channels
+        """
+
+        results = self.db_manager.fetch_all_query(query)
+        for result in results:
+            result_server_id = result['server_id']
+            result_channel_id = result['channel_id']
+
+            self.starboard_channels[result_server_id] = result_channel_id
+    
+
     # Insert or update channel ID for starboard channel in database
     #   Usage: a.setstar <channel id>
     @commands.command()
@@ -39,6 +58,7 @@ class starboard(commands.Cog):
             await ctx.send("An error occurred.. please contact Discord user \"vietaki\"")
             print(e)
 
+
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
         # check emoji
@@ -50,11 +70,20 @@ class starboard(commands.Cog):
             if message.author.id != KARUTA_BOT_ID:
                 return
 
-            # get the starboard channel ID from database
-            query = "SELECT channel_id FROM server_channels WHERE server_id = %s"
-            result = self.db_manager.fetch_query(query, (current_guild,))
-            if result:
-                STARBOARD_CHANNEL_ID = result['channel_id']
+            # check server id/channel id pair map
+            if current_guild in self.starboard_channels:
+                STARBOARD_CHANNEL_ID = self.starboard_channels[current_guild]
+            # not in map, update map from database
+            else:
+                self.fetch_starboard_channels()
+
+                # check again after updating variable
+                if current_guild in self.starboard_channels:
+                    STARBOARD_CHANNEL_ID = self.starboard_channels[current_guild]
+                # either it's not in the database, or the map isn't updating correctly
+                else:
+                    await message.channel.send("Looks like there is no starboard channel set up! Use a.setstar to set starboard channel!\n" +
+                                               "(Or there is a major problem, if so, please let Discord user **vietaki** know!)")
 
             # get the URL of the image
             image_url = message.attachments[0].url
